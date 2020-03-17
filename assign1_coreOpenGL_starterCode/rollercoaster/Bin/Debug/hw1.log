@@ -1,0 +1,19 @@
+﻿  hw1.cpp
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(480,4): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(480,4): warning C4244:         with
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(480,4): warning C4244:         [
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(480,4): warning C4244:             T=float
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(480,4): warning C4244:         ]
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(495,4): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(495,4): warning C4244:         with
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(495,4): warning C4244:         [
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(495,4): warning C4244:             T=float
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(495,4): warning C4244:         ]
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(515,15): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(516,15): warning C4305: 'initializing': truncation from 'double' to 'float'
+  jpeg.lib(jerror.obj) : MSIL .netmodule or module compiled with /GL found; restarting link with /LTCG; add /LTCG to the link command line to improve linker performance
+LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/LTCG' specification
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  Generating code
+  Finished generating code
+  hw1.vcxproj -> C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\\Bin\Debug\hw1.exe
