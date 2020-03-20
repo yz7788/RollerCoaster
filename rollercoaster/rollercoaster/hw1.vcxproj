@@ -29,6 +29,8 @@
   <ItemGroup>
     <None Include="..\openGLHelper-starterCode\basic.fragmentShader.glsl" />
     <None Include="..\openGLHelper-starterCode\basic.vertexShader.glsl" />
+    <None Include="..\openGLHelper-starterCode\texture.fragmentShader.glsl" />
+    <None Include="..\openGLHelper-starterCode\texture.vertexShader.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{15913627-D497-4AA0-BD7E-734F0D40F7C9}</ProjectGuid>

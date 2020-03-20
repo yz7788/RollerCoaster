@@ -32,6 +32,10 @@ char shaderBasePath[1024] = SHADER_BASE_PATH;
 char shaderBasePath[1024] = "../openGLHelper-starterCode";
 #endif
 
+#define MIN(a,b) (a<b ? a:b)
+#define MAX(a,b) (a>b ? a:b)
+
+
 using namespace std;
 
 int mousePos[2]; // x,y coordinate of the mouse position
@@ -53,20 +57,26 @@ int windowWidth = 1280;
 int windowHeight = 720;
 char windowTitle[512] = "CSCI 420 homework I";
 
+int index;
+int speed = 0;
+int display_index = 0;
+
+
 //VAO, VBO
 GLuint triVertexBuffer, triColorVertexBuffer;
 GLuint triVertexArray;
 GLuint controlVertexBuffer, controlColorVertexBuffer;
 GLuint controlVertexArray;
-GLuint texVertexBuffer;
+
 int sizeTri;
 
-//texture coordinate VBO
-GLuint texcoordVertexBuffer;
+//texture coordinate VBO. VAO
+GLuint groundVertexBuffer, texcoordVertexBuffer;
+GLuint texVertexBuffer;
+GLuint texVertexArray;
 
 OpenGLMatrix matrix;
 BasicPipelineProgram* pipelineProgram;
-
 BasicPipelineProgram* textureProgram;
 
 // represents one control point along the spline 
@@ -293,17 +303,26 @@ void displayFunc()
 
 	matrix.SetMatrixMode(OpenGLMatrix::ModelView);
 	matrix.LoadIdentity();
-	setCamera(splinePoints[camera_index], splineTangents[camera_index], splineNormals[camera_index]);
-	//matrix.LookAt(0, 0, 5, 0, 0, 0, 0, 1, 0);
-	cout << camera_index << endl;
-	cout << splinePoints[camera_index].x << " " << splinePoints[camera_index].y << " " << splinePoints[camera_index].z << endl;
 
+	//setCamera(splinePoints[camera_index], splineTangents[camera_index], splineNormals[camera_index]);
+
+	float a = 0.5;
+	glm::vec3 eye = splinePoints[camera_index] + splineNormals[camera_index] * a;
+	glm::vec3 center = eye + splineTangents[camera_index];
+	matrix.LookAt(eye.x, eye.y, eye.z, center.x + landRotate[0], center.y + landRotate[1], center.z + landRotate[2], splineNormals[camera_index].x, splineNormals[camera_index].y, splineNormals[camera_index].z);
+
+	if(display_index%(50 -5 * speed) == 0) camera_index = camera_index + 1;
+	display_index++;
+
+	//cout << camera_index << endl;
+	//cout << splinePoints[camera_index].x << " " << splinePoints[camera_index].y << " " << splinePoints[camera_index].z << endl;
+	
 	//ModelView
-	matrix.Translate(landTranslate[0], landTranslate[1], landTranslate[2]);
-	matrix.Rotate(landRotate[0], 1.0f, 0.0f, 0.0f);
-	matrix.Rotate(landRotate[1], 0.0f, 1.0f, 0.0f);
-	matrix.Rotate(landRotate[2], 0.0f, 0.0f, 1.0f);
-	matrix.Scale(landScale[0], landScale[1], landScale[2]);
+	//matrix.Translate(landTranslate[0], landTranslate[1], landTranslate[2]);
+	//matrix.Rotate(landRotate[0], 1.0f, 0.0f, 0.0f);
+	//matrix.Rotate(landRotate[1], 0.0f, 1.0f, 0.0f);
+	//matrix.Rotate(landRotate[2], 0.0f, 0.0f, 1.0f);
+	//matrix.Scale(landScale[0], landScale[1], landScale[2]);
 
 	float m[16];
 	matrix.SetMatrixMode(OpenGLMatrix::ModelView);
@@ -312,16 +331,25 @@ void displayFunc()
 	float p[16];
 	matrix.SetMatrixMode(OpenGLMatrix::Projection);
 	matrix.GetMatrix(p);
-	//
-	// bind shader
-	pipelineProgram->Bind();
 
-	// set variable
+	//Use BasicProgram
+	pipelineProgram->Bind();
 	pipelineProgram->SetModelViewMatrix(m);
 	pipelineProgram->SetProjectionMatrix(p);
 
 	glBindVertexArray(triVertexArray);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, sizeTri);
+
+
+	//Use Texture Program
+	textureProgram->Bind();
+	textureProgram->SetModelViewMatrix(m);
+	textureProgram->SetProjectionMatrix(p);
+
+	glBindTexture(GL_TEXTURE_2D, texVertexBuffer);
+	glBindVertexArray(texVertexArray);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
 
 	glutSwapBuffers();
 }
@@ -473,7 +501,11 @@ void keyboardFunc(unsigned char key, int x, int y)
 		break;
 
 	case 'w':
-		camera_index = camera_index + 3;
+		camera_index = MIN(index-1, camera_index + 3);
+		break;
+
+	case 's':
+		camera_index = MAX(0,camera_index - 3);
 		break;
 	}
 }
@@ -522,7 +554,7 @@ void generateSpline(int spline_index) {
 	float h = 0.2;
 
 	//record the index for spline arrays (splinePoints[], splineTangents[], splineNormals[], splineBiNormals[])
-	int index = 0;
+	index = 0;
 
 	//for each n, draw a segment of curve (control points from spline->points[n] to spline->points[n+3])
 	for (int n = 0; n < segment_num; n++) {
@@ -569,13 +601,12 @@ void generateSpline(int spline_index) {
 		splinePoints_line[i * 8 + 5] = splinePoints_crosssection[(i+ 1) * 4 + 1];
 		splinePoints_line[i * 8 + 6] = splinePoints_crosssection[i * 4];
 		splinePoints_line[i * 8 + 7] = splinePoints_crosssection[(i + 1) * 4];
-		splineColor_line[i * 8] = splineColor_line[i * 8 + 2] = splineColor_line[i * 8 + 4] = splineColor_line[i * 8 + 6] = { splineNormals[i].x, splineNormals[i].y, splineNormals[i].z, 1 };
-		splineColor_line[i * 8 + 1] = splineColor_line[i * 8 + 3] = splineColor_line[i * 8 + 5] = splineColor_line[i * 8 + 7] = { splineNormals[i+1].x, splineNormals[i+1].y, splineNormals[i+1].z, 1 };
-	}
-}
+		//splineColor_line[i * 8] = splineColor_line[i * 8 + 2] = splineColor_line[i * 8 + 4] = splineColor_line[i * 8 + 6] = { splineNormals[i].x, splineNormals[i].y, splineNormals[i].z, 1 };
+		//splineColor_line[i * 8 + 1] = splineColor_line[i * 8 + 3] = splineColor_line[i * 8 + 5] = splineColor_line[i * 8 + 7] = { splineNormals[i+1].x, splineNormals[i+1].y, splineNormals[i+1].z, 1 };
+		splineColor_line[i * 8] = splineColor_line[i * 8 + 2] = splineColor_line[i * 8 + 4] = splineColor_line[i * 8 + 6] = {1,1,1,1};
+		splineColor_line[i * 8 + 1] = splineColor_line[i * 8 + 3] = splineColor_line[i * 8 + 5] = splineColor_line[i * 8 + 7] = {1,1,1,1};
 
-void loadTexture() {
-        
+	}
 }
 
 void initScene(int argc, char* argv[])
@@ -583,6 +614,7 @@ void initScene(int argc, char* argv[])
 	// load the image from a jpeg disk file to main memory
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
+	//basic shading program
 	generateSpline(0);//generate all data for splines[0] (including splinePoints[], splineTangents[], splineNormals[], splineBinormals[])
 
 	glGenBuffers(1, &triVertexBuffer);
@@ -593,8 +625,11 @@ void initScene(int argc, char* argv[])
 	glBindBuffer(GL_ARRAY_BUFFER, triColorVertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * (spline_interval_num * (splines[0].numControlPoints - 3) - 1) * 8, splineColor_line, GL_STATIC_DRAW);
 
+	char vertexshaderName[100] = "basic.vertexShader.glsl";
+	char fragmentshaderName[100] = "basic.fragmentShader.glsl";
+
 	pipelineProgram = new BasicPipelineProgram;
-	int ret = pipelineProgram->Init(shaderBasePath);
+	int ret = pipelineProgram->Init(shaderBasePath, vertexshaderName, fragmentshaderName);
 	if (ret != 0) abort();
 
 	glGenVertexArrays(1, &triVertexArray);
@@ -617,23 +652,59 @@ void initScene(int argc, char* argv[])
 
 	std::cout << "GL error: " << glGetError() << std::endl;
 
+	//texture shading program
+	glm::vec3 ground[4] = {
+		glm::vec3(1000, -2, 1000),
+		glm::vec3(1000, -2, -1000),
+		glm::vec3(-1000, -2, -1000),
+		glm::vec3(-1000, -2, 1000),
 
-	//set texture
-	glm::vec2* texCoords = new glm::vec2[4];
-	texCoords[0] = glm::vec2(0, 0);
-	texCoords[1] = glm::vec2(0, 1);
-	texCoords[2] = glm::vec2(1, 1);
-	texCoords[3] = glm::vec2(1, 0);
+	};
+	glm::vec2 texCoords[4] = {
+	    glm::vec2(0, 100),
+	    glm::vec2(0, 0),
+	    glm::vec2(100, 100),
+		glm::vec2(100, 0)
+	};
+	
+	glGenBuffers(1, &groundVertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, groundVertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 4, ground, GL_STATIC_DRAW);
+
 	glGenBuffers(1, &texcoordVertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, texcoordVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * 8, texCoords, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * 4, texCoords, GL_STATIC_DRAW);
+    
+	strcpy(vertexshaderName, "texture.vertexShader.glsl");
+	strcpy(fragmentshaderName, "texture.fragmentShader.glsl");
+	//char vertexshaderName[100] = "texture.vertexShader.glsl";
+	//char fragmentshaderName[100] = "texture.fragmentShader.glsl";
 
 	textureProgram = new BasicPipelineProgram;
-	int 
-	glGenBuffers(1, &texVertexBuffer);
-	initTexture("beach.jpg", texVertexBuffer);
-	
+	ret = textureProgram->Init(shaderBasePath, vertexshaderName, fragmentshaderName);
+	if (ret != 0) abort();
 
+	glGenVertexArrays(1, &texVertexArray);
+	glBindVertexArray(texVertexArray);
+
+	glBindBuffer(GL_ARRAY_BUFFER, groundVertexBuffer);
+	loc =
+		glGetAttribLocation(textureProgram->GetProgramHandle(), "position");
+	glEnableVertexAttribArray(loc);
+	glVertexAttribPointer(loc, 3, GL_FLOAT, GL_FALSE, 0, (const void*)0);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, texcoordVertexBuffer);
+	loc = glGetAttribLocation(textureProgram->GetProgramHandle(), "texCoord");
+	glEnableVertexAttribArray(loc);
+	glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 0, (const void*)0);
+
+	std::cout << "GL error: " << glGetError() << std::endl;
+
+	//texture part
+	glGenBuffers(1, &texVertexBuffer);
+	//glBindTexture(GL_TEXTURE_2D, texVertexBuffer); //All upcoming GL_TEXTURE_2D operations now have effect on our texture object
+	initTexture("unnamed.jpg", texVertexBuffer);
+	//glBindTexture(GL_TEXTURE_2D, 0);//
 }
 
 void cleanUp() {

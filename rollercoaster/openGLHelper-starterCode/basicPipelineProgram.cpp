@@ -5,9 +5,9 @@
 
 using namespace std;
 
-int BasicPipelineProgram::Init(const char * shaderBasePath) 
+int BasicPipelineProgram::Init(const char * shaderBasePath, const char* vertexshader, const char* fragmentshader) 
 {
-  if (BuildShadersFromFiles(shaderBasePath, "basic.vertexShader.glsl", "basic.fragmentShader.glsl") != 0)
+  if (BuildShadersFromFiles(shaderBasePath, vertexshader, fragmentshader) != 0)
   {
     cout << "Failed to build the pipeline program." << endl;
     return 1;
