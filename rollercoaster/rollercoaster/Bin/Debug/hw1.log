@@ -1,14 +1,14 @@
 ﻿  hw1.cpp
-C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(525,4): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
-C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(525,4): warning C4244:         with
-C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(525,4): warning C4244:         [
-C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(525,4): warning C4244:             T=float
-C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(525,4): warning C4244:         ]
-C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(541,4): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
-C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(541,4): warning C4244:         with
-C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(541,4): warning C4244:         [
-C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(541,4): warning C4244:             T=float
-C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(541,4): warning C4244:         ]
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(526,4): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(526,4): warning C4244:         with
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(526,4): warning C4244:         [
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(526,4): warning C4244:             T=float
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(526,4): warning C4244:         ]
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(542,4): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(542,4): warning C4244:         with
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(542,4): warning C4244:         [
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(542,4): warning C4244:             T=float
+C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(542,4): warning C4244:         ]
 C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(560,15): warning C4305: 'initializing': truncation from 'double' to 'float'
 C:\Users\yz778\Desktop\CSCI 420\Assignment\Assignment 2\assign1_coreOpenGL_starterCode (1)\rollercoaster\rollercoaster\hw1.cpp(561,15): warning C4305: 'initializing': truncation from 'double' to 'float'
   jpeg.lib(jerror.obj) : MSIL .netmodule or module compiled with /GL found; restarting link with /LTCG; add /LTCG to the link command line to improve linker performance

@@ -118,6 +118,7 @@ glm::vec3* splinePoints_line;
 glm::vec4* splineColor_line;
 
 glm::vec3* splinePoints_crosssection;
+glm::vec3* splinePoints_ordered_crosssection;
 
 //Math Helper Function
 glm::vec3 crossProduct(glm::vec3 a, glm::vec3 b) {
@@ -314,8 +315,8 @@ void displayFunc()
 	glm::vec3 center = eye + splineTangents[camera_index];
 	matrix.LookAt(eye.x, eye.y, eye.z, center.x + landRotate[0], center.y + landRotate[1], center.z + landRotate[2], splineNormals[camera_index].x, splineNormals[camera_index].y, splineNormals[camera_index].z);
 
-	if(display_index%(50 -5 * speed) == 0) camera_index = camera_index + 1;
-	display_index++;
+	//if(display_index%(50 -5 * speed) == 0) camera_index = camera_index + 1;
+	//display_index++;
 
 	//cout << camera_index << endl;
 	//cout << splinePoints[camera_index].x << " " << splinePoints[camera_index].y << " " << splinePoints[camera_index].z << endl;
@@ -343,9 +344,8 @@ void displayFunc()
 	glUniform3fv(glGetUniformLocation(pipelineProgram->GetProgramHandle(), "lightPosition"), 1, lightPosition);
 
 	glBindVertexArray(triVertexArray);
-	//glDrawArrays(GL_TRIANGLE_STRIP, 0, sizeTri);
-	glDrawElements(GL_TRIANGLE_STRIP, sizeTri, GL_UNSIGNED_INT, 0);
-
+	glDrawArrays(GL_TRIANGLES, 0, sizeTri);
+	
 	//Use Texture Program
 	textureProgram->Bind();
 	textureProgram->SetModelViewMatrix(m);
@@ -553,7 +553,6 @@ void generateSpline(int spline_index) {
 	splineNormals = new glm::vec3[spline_interval_num * segment_num];
 	splineBinormals = new glm::vec3[spline_interval_num * segment_num];
 	
-	splineColor_line = new glm::vec4[4 * spline_interval_num * segment_num];
 	splinePoints_crosssection = new glm::vec3[4 * spline_interval_num * segment_num];
 
 	//set the scale of width and height of the rail crosssection
@@ -589,26 +588,53 @@ void generateSpline(int spline_index) {
 
 			//calculate the four points for the rectangle crosssection
 			splinePoints_crosssection[index * 4] = splinePoints[index] + scaleMultiply(h, (splineNormals[index]) + scaleMultiply(w, splineBinormals[index]));
-			splinePoints_crosssection[index * 4 + 1] = splinePoints[index] + scaleMultiply(h, (-splineNormals[index]) + scaleMultiply(w, splineBinormals[index]));
+			splinePoints_crosssection[index * 4 + 1] = splinePoints[index] + scaleMultiply(-h, (splineNormals[index]) + scaleMultiply(w, splineBinormals[index]));
 			splinePoints_crosssection[index * 4 + 2] = splinePoints[index] + scaleMultiply(h, (splineNormals[index]) + scaleMultiply(-w, splineBinormals[index]));
-			splinePoints_crosssection[index * 4 + 3] = splinePoints[index] + scaleMultiply(h, (-splineNormals[index]) + scaleMultiply(-w, splineBinormals[index]));
-
-			splineColor_line[index * 4] = splineColor_line[index * 4 + 1] = splineColor_line[index * 4 + 2] = splineColor_line[index * 4 + 3] = {1,1,1,1};
+			splinePoints_crosssection[index * 4 + 3] = splinePoints[index] + scaleMultiply(-h, (splineNormals[index]) + scaleMultiply(-w, splineBinormals[index]));
 
 			index++;
 		}
 	}
 
-	railcrossElements = new int[(spline_interval_num * segment_num - 1) * 8];
+	splinePoints_ordered_crosssection = new glm::vec3[(spline_interval_num * segment_num - 1) * 24];
 	for (int i = 0; i < spline_interval_num * segment_num - 1; i++) {
-		railcrossElements[i * 8] = i * 4 + 2;
-		railcrossElements[i * 8 + 1] = (i + 1) * 4 + 2;
-		railcrossElements[i * 8 + 2] = i * 4 + 3;
-		railcrossElements[i * 8 + 3] = (i + 1) * 4 + 3;
-		railcrossElements[i * 8 + 4] = i * 4 + 1;
-		railcrossElements[i * 8 + 5] = (i + 1) * 4 + 1;
-		railcrossElements[i * 8 + 6] = i * 4;
-		railcrossElements[i * 8 + 7] = (i + 1) * 4;
+		splinePoints_ordered_crosssection[i * 24] = splinePoints_crosssection[i * 4 + 2];
+		splinePoints_ordered_crosssection[i * 24 + 1] = splinePoints_crosssection[(i + 1) * 4 + 2];
+		splinePoints_ordered_crosssection[i * 24 + 2] = splinePoints_crosssection[i * 4 + 3];
+
+		splinePoints_ordered_crosssection[i * 24 + 3] = splinePoints_crosssection[(i + 1) * 4 + 2];
+		splinePoints_ordered_crosssection[i * 24 + 4] = splinePoints_crosssection[i * 4 + 3];
+		splinePoints_ordered_crosssection[i * 24 + 5] = splinePoints_crosssection[(i + 1) * 4 + 3];
+
+		splinePoints_ordered_crosssection[i * 24 + 6] = splinePoints_crosssection[i * 4 + 3];
+		splinePoints_ordered_crosssection[i * 24 + 7] = splinePoints_crosssection[(i + 1) * 4 + 3];
+		splinePoints_ordered_crosssection[i * 24 + 8] = splinePoints_crosssection[i * 4 + 1];
+
+		splinePoints_ordered_crosssection[i * 24 + 9] = splinePoints_crosssection[(i + 1) * 4 + 3];
+		splinePoints_ordered_crosssection[i * 24 + 10] = splinePoints_crosssection[i * 4 + 1];
+		splinePoints_ordered_crosssection[i * 24 + 11] = splinePoints_crosssection[(i + 1) * 4 + 1];
+		splinePoints_ordered_crosssection[i * 24 + 11] = splinePoints_crosssection[(i + 1) * 4 + 1];
+
+		splinePoints_ordered_crosssection[i * 24 + 12] = splinePoints_crosssection[i * 4 + 1];
+		splinePoints_ordered_crosssection[i * 24 + 13] = splinePoints_crosssection[(i + 1) * 4 + 1];
+		splinePoints_ordered_crosssection[i * 24 + 14] = splinePoints_crosssection[i * 4];
+
+		splinePoints_ordered_crosssection[i * 24 + 15] = splinePoints_crosssection[(i + 1) * 4 + 1];
+		splinePoints_ordered_crosssection[i * 24 + 16] = splinePoints_crosssection[i * 4];
+		splinePoints_ordered_crosssection[i * 24 + 17] = splinePoints_crosssection[(i + 1) * 4];
+
+		splinePoints_ordered_crosssection[i * 24 + 18] = splinePoints_crosssection[i * 4];
+		splinePoints_ordered_crosssection[i * 24 + 19] = splinePoints_crosssection[(i + 1) * 4];
+		splinePoints_ordered_crosssection[i * 24 + 20] = splinePoints_crosssection[i * 4 + 2];
+
+		splinePoints_ordered_crosssection[i * 24 + 21] = splinePoints_crosssection[(i + 1) * 4];
+		splinePoints_ordered_crosssection[i * 24 + 22] = splinePoints_crosssection[i * 4 + 2];
+		splinePoints_ordered_crosssection[i * 24 + 23] = splinePoints_crosssection[(i + 1) * 4 + 2];
+	}
+
+	splineColor_line = new glm::vec4[24 * (spline_interval_num * segment_num - 1)];
+	for (int i = 0; i < 24 * (spline_interval_num * segment_num - 1); i++) {
+		splineColor_line[i] = { 1,1,1,1 };
 	}
 }
 
@@ -622,11 +648,11 @@ void initScene(int argc, char* argv[])
 
 	glGenBuffers(1, &triVertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, triVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 4 * spline_interval_num * (splines[0].numControlPoints - 3), splinePoints_crosssection, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 24 * (spline_interval_num * (splines[0].numControlPoints - 3) - 1), splinePoints_ordered_crosssection, GL_STATIC_DRAW);
 
 	glGenBuffers(1, &triColorVertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, triColorVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * 4 * spline_interval_num * (splines[0].numControlPoints - 3), splineColor_line, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * 24 * (spline_interval_num * (splines[0].numControlPoints - 3) - 1), splineColor_line, GL_STATIC_DRAW);
 
 	char vertexshaderName[100] = "basic.vertexShader.glsl";
 	char fragmentshaderName[100] = "basic.fragmentShader.glsl";
@@ -637,10 +663,6 @@ void initScene(int argc, char* argv[])
 
 	glGenVertexArrays(1, &triVertexArray);
 	glBindVertexArray(triVertexArray);
-
-	glGenBuffers(1, &ElementBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ElementBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * (spline_interval_num * (splines[0].numControlPoints - 3) - 1) * 8, railcrossElements, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, triVertexBuffer);
 	GLuint loc =
@@ -655,7 +677,7 @@ void initScene(int argc, char* argv[])
 
 	glEnable(GL_DEPTH_TEST);
 
-	sizeTri = 8 * (spline_interval_num * (splines[0].numControlPoints - 3) -1);
+	sizeTri = 24 * (spline_interval_num * (splines[0].numControlPoints - 3) -1);
 
 	std::cout << "GL error: " << glGetError() << std::endl;
 
