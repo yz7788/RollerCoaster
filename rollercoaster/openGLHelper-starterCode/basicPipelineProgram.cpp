@@ -29,6 +29,7 @@ void BasicPipelineProgram::SetProjectionMatrix(const float * m)
   glUniformMatrix4fv(h_projectionMatrix, 1, GL_FALSE, m);
 }
 
+
 int BasicPipelineProgram::SetShaderVariableHandles() 
 {
   // Set h_modelViewMatrix and h_projectionMatrix.

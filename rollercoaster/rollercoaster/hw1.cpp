@@ -61,7 +61,6 @@ int index;
 int speed = 0;
 int display_index = 0;
 
-
 //VAO, VBO
 GLuint triVertexBuffer, triColorVertexBuffer;
 GLuint triVertexArray;
@@ -74,6 +73,10 @@ int sizeTri;
 GLuint groundVertexBuffer, texcoordVertexBuffer;
 GLuint texVertexBuffer;
 GLuint texVertexArray;
+
+//EBO
+GLuint ElementBuffer;
+int* railcrossElements;
 
 OpenGLMatrix matrix;
 BasicPipelineProgram* pipelineProgram;
@@ -336,10 +339,12 @@ void displayFunc()
 	pipelineProgram->Bind();
 	pipelineProgram->SetModelViewMatrix(m);
 	pipelineProgram->SetProjectionMatrix(p);
+	float lightPosition[3] = { 1,1,1 };
+	glUniform3fv(glGetUniformLocation(pipelineProgram->GetProgramHandle(), "lightPosition"), 1, lightPosition);
 
 	glBindVertexArray(triVertexArray);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, sizeTri);
-
+	//glDrawArrays(GL_TRIANGLE_STRIP, 0, sizeTri);
+	glDrawElements(GL_TRIANGLE_STRIP, sizeTri, GL_UNSIGNED_INT, 0);
 
 	//Use Texture Program
 	textureProgram->Bind();
@@ -547,6 +552,8 @@ void generateSpline(int spline_index) {
 	splineTangents = new glm::vec3[spline_interval_num * segment_num];
 	splineNormals = new glm::vec3[spline_interval_num * segment_num];
 	splineBinormals = new glm::vec3[spline_interval_num * segment_num];
+	
+	splineColor_line = new glm::vec4[4 * spline_interval_num * segment_num];
 	splinePoints_crosssection = new glm::vec3[4 * spline_interval_num * segment_num];
 
 	//set the scale of width and height of the rail crosssection
@@ -586,26 +593,22 @@ void generateSpline(int spline_index) {
 			splinePoints_crosssection[index * 4 + 2] = splinePoints[index] + scaleMultiply(h, (splineNormals[index]) + scaleMultiply(-w, splineBinormals[index]));
 			splinePoints_crosssection[index * 4 + 3] = splinePoints[index] + scaleMultiply(h, (-splineNormals[index]) + scaleMultiply(-w, splineBinormals[index]));
 
+			splineColor_line[index * 4] = splineColor_line[index * 4 + 1] = splineColor_line[index * 4 + 2] = splineColor_line[index * 4 + 3] = {1,1,1,1};
+
 			index++;
 		}
 	}
 
-	splinePoints_line = new glm::vec3[(spline_interval_num * segment_num - 1) * 8];
-	splineColor_line = new glm::vec4[(spline_interval_num * segment_num - 1) * 8];
+	railcrossElements = new int[(spline_interval_num * segment_num - 1) * 8];
 	for (int i = 0; i < spline_interval_num * segment_num - 1; i++) {
-		splinePoints_line[i * 8] = splinePoints_crosssection[i * 4 + 2];
-		splinePoints_line[i * 8 + 1] = splinePoints_crosssection[(i + 1) * 4 + 2];
-		splinePoints_line[i * 8 + 2] = splinePoints_crosssection[i * 4 + 3];
-		splinePoints_line[i * 8 + 3] = splinePoints_crosssection[(i + 1) * 4 + 3];
-		splinePoints_line[i * 8 + 4] = splinePoints_crosssection[i * 4 + 1];
-		splinePoints_line[i * 8 + 5] = splinePoints_crosssection[(i+ 1) * 4 + 1];
-		splinePoints_line[i * 8 + 6] = splinePoints_crosssection[i * 4];
-		splinePoints_line[i * 8 + 7] = splinePoints_crosssection[(i + 1) * 4];
-		//splineColor_line[i * 8] = splineColor_line[i * 8 + 2] = splineColor_line[i * 8 + 4] = splineColor_line[i * 8 + 6] = { splineNormals[i].x, splineNormals[i].y, splineNormals[i].z, 1 };
-		//splineColor_line[i * 8 + 1] = splineColor_line[i * 8 + 3] = splineColor_line[i * 8 + 5] = splineColor_line[i * 8 + 7] = { splineNormals[i+1].x, splineNormals[i+1].y, splineNormals[i+1].z, 1 };
-		splineColor_line[i * 8] = splineColor_line[i * 8 + 2] = splineColor_line[i * 8 + 4] = splineColor_line[i * 8 + 6] = {1,1,1,1};
-		splineColor_line[i * 8 + 1] = splineColor_line[i * 8 + 3] = splineColor_line[i * 8 + 5] = splineColor_line[i * 8 + 7] = {1,1,1,1};
-
+		railcrossElements[i * 8] = i * 4 + 2;
+		railcrossElements[i * 8 + 1] = (i + 1) * 4 + 2;
+		railcrossElements[i * 8 + 2] = i * 4 + 3;
+		railcrossElements[i * 8 + 3] = (i + 1) * 4 + 3;
+		railcrossElements[i * 8 + 4] = i * 4 + 1;
+		railcrossElements[i * 8 + 5] = (i + 1) * 4 + 1;
+		railcrossElements[i * 8 + 6] = i * 4;
+		railcrossElements[i * 8 + 7] = (i + 1) * 4;
 	}
 }
 
@@ -619,11 +622,11 @@ void initScene(int argc, char* argv[])
 
 	glGenBuffers(1, &triVertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, triVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * (spline_interval_num * (splines[0].numControlPoints - 3) - 1) * 8, splinePoints_line, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 4 * spline_interval_num * (splines[0].numControlPoints - 3), splinePoints_crosssection, GL_STATIC_DRAW);
 
 	glGenBuffers(1, &triColorVertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, triColorVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * (spline_interval_num * (splines[0].numControlPoints - 3) - 1) * 8, splineColor_line, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * 4 * spline_interval_num * (splines[0].numControlPoints - 3), splineColor_line, GL_STATIC_DRAW);
 
 	char vertexshaderName[100] = "basic.vertexShader.glsl";
 	char fragmentshaderName[100] = "basic.fragmentShader.glsl";
@@ -634,7 +637,11 @@ void initScene(int argc, char* argv[])
 
 	glGenVertexArrays(1, &triVertexArray);
 	glBindVertexArray(triVertexArray);
-	
+
+	glGenBuffers(1, &ElementBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ElementBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * (spline_interval_num * (splines[0].numControlPoints - 3) - 1) * 8, railcrossElements, GL_STATIC_DRAW);
+
 	glBindBuffer(GL_ARRAY_BUFFER, triVertexBuffer);
 	GLuint loc =
 		glGetAttribLocation(pipelineProgram->GetProgramHandle(), "position");
@@ -677,8 +684,6 @@ void initScene(int argc, char* argv[])
     
 	strcpy(vertexshaderName, "texture.vertexShader.glsl");
 	strcpy(fragmentshaderName, "texture.fragmentShader.glsl");
-	//char vertexshaderName[100] = "texture.vertexShader.glsl";
-	//char fragmentshaderName[100] = "texture.fragmentShader.glsl";
 
 	textureProgram = new BasicPipelineProgram;
 	ret = textureProgram->Init(shaderBasePath, vertexshaderName, fragmentshaderName);
