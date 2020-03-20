@@ -1,17 +1,17 @@
 #version 150
 
 in vec3 position;
+in vec3 normal;
 in vec4 color;
-//in vec3 normal;
 
-//out vec3 surfaceNormal; 
-//out vec3 tolightVector;
+out vec3 surfaceNormal; 
+out vec3 tolightVector;
 out vec4 col;
 
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 
-//uniform vec3 lightPosition;
+uniform vec3 lightPosition;
 
 void main()
 {
@@ -19,7 +19,8 @@ void main()
   // compute the vertex color (into col)
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0f);
 
-  //surfaceNormal = normal;
-  //tolightVector = lightPosition - position;
+  surfaceNormal = normal;
+  tolightVector = lightPosition - position;
+
   col = color;
 }
