@@ -12,7 +12,7 @@ void main()
 {
   // compute the final pixel color
 
-  float ambientStrength = 0.1;
+  float ambientStrength = 0.3;
   vec3 ambient = ambientStrength * lightColor;
 
   vec3 unitNormal = normalize(surfaceNormal);

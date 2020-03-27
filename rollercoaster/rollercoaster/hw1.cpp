@@ -815,6 +815,8 @@ int main(int argc, char* argv[])
 	glutMainLoop();
 
 	cleanUp();
+
+	system("pause");
 }
 
 
