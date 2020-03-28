@@ -11,7 +11,7 @@ uniform vec3 lightColor;
 void main()
 {
   // compute the final pixel color
- 
+  
   vec4 La;
   vec4 Ld;
   vec4 Ls;
@@ -20,8 +20,6 @@ void main()
   vec4 kd;
   vec4 ks;
   float alpha;
-  
-
   
   vec3 k_a = vec3(0.3, 0.3, 0.3);
   vec3 ambient = vec3(k_a.x * lightColor.x, k_a.y * lightColor.y, k_a.z * lightColor.z);
@@ -33,5 +31,4 @@ void main()
   vec3 diffuse = brightness * lightColor;
 
   c = vec4((diffuse + ambient) * col.xyz, 1.0);
-  
 }

@@ -340,10 +340,6 @@ void displayFunc()
 
 	setCamera(splinePoints[(int)camera_index], splineTangents[(int)camera_index], splineNormals[(int)camera_index], move_1);
 
-	//float velocity = sqrt(2 * 9.8 * (h_max - splinePoints[(int)camera_index].y)) / sqrt(splineTangents[(int)camera_index].x * splineTangents[(int)camera_index].x + splineTangents[(int)camera_index].y * splineTangents[(int)camera_index].y + splineTangents[(int)camera_index].z * splineTangents[(int)camera_index].z);
-	//if(display_index % 50 == 0) camera_index = camera_index + (int)velocity;
-	//display_index++;
-
 	//ModelView
 	matrix.Translate(landTranslate[0], landTranslate[1], landTranslate[2]);
 	matrix.Rotate(landRotate[0], 1.0f, 0.0f, 0.0f);
@@ -354,15 +350,22 @@ void displayFunc()
 	float m[16];
 	matrix.SetMatrixMode(OpenGLMatrix::ModelView);
 	matrix.GetMatrix(m);
-	
+
 	float p[16];
 	matrix.SetMatrixMode(OpenGLMatrix::Projection);
 	matrix.GetMatrix(p);
+
+    float nnn[16];
+	matrix.SetMatrixMode(OpenGLMatrix::ModelView);
+	matrix.GetNormalMatrix(nnn);
 
 	//Use BasicProgram
 	pipelineProgram->Bind();
 	pipelineProgram->SetModelViewMatrix(m);
 	pipelineProgram->SetProjectionMatrix(p);
+
+	GLint test = glGetUniformLocation(pipelineProgram->GetProgramHandle(), "normalMatrix");
+	glUniformMatrix4fv(test, 1, GL_FALSE, nnn);
 	
 	float lightPosition[3] = { 10,50,10 };
 	glUniform3fv(glGetUniformLocation(pipelineProgram->GetProgramHandle(), "lightPosition"), 1, lightPosition);
@@ -372,14 +375,7 @@ void displayFunc()
 	glBindVertexArray(triVertexArray);
 	glDrawArrays(GL_TRIANGLES, 0, railcrosssectionSize);
 
-	glBindVertexArray(axisVertexArray);
-	glDrawArrays(GL_LINE, 0, 6);
-	/*
-	glBindVertexArray(skyVertexArray);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glDrawElements(GL_TRIANGLE_STRIP, skyindices.size(), GL_UNSIGNED_SHORT, 0);
-	*/
-	//glDrawArrays(GL_LINE_STRIP, 0, skyPoints.size());
+	if (glGetError() != 0) cout << "basic pipeline program initialization error_3" << endl;
 
 	//Use Texture Program
 	textureProgram->Bind();
@@ -395,7 +391,8 @@ void displayFunc()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glDrawElements(GL_TRIANGLE_STRIP, skyindices.size(), GL_UNSIGNED_SHORT, 0);
 
-	//glBindTexture(GL_TEXTURE_2D, skyimageVertexBuffer);
+	if (glGetError() != 0) cout << "texture pipeline program initialization error" << endl;
+
 
 	glutSwapBuffers();
 }
@@ -798,78 +795,6 @@ void initScene(int argc, char* argv[])
 	SetVertexAttrib(triColorVertexBuffer, pipelineProgram, "color", 4);
 	SetVertexAttrib(lightnormalVertexBuffer, pipelineProgram, "normal", 3);
 
-
-	glm::vec3 x_axis[2] = {
-		glm::vec3(-100, 0, 0),
-		glm::vec3(100, 0, 0)
-	};
-
-	glm::vec3 y_axis[2] = {
-		glm::vec3(0, -100, 0),
-		glm::vec3(0, 100, 0)
-	};
-
-	glm::vec3 z_axis[2] = {
-		glm::vec3(0, 0, -100),
-		glm::vec3(0, 0, 100)
-	};
-
-	glm::vec4 x_color[2] = {
-		glm::vec4(1, 0, 0, 1),
-		glm::vec4(1, 0, 0, 1)
-	};
-
-	glm::vec4 y_color[2] = {
-		glm::vec4(0, 1, 0, 1),
-		glm::vec4(0, 1, 0, 1)
-	};
-
-	glm::vec4 z_color[2] = {
-		glm::vec4(0, 0, 1, 1),
-		glm::vec4(0, 0, 1, 1)
-	};
-
-	glm::vec3 x_normal[2] = {
-		glm::vec3(-100, 0, 0),
-		glm::vec3(100, 0, 0)
-	};
-
-	glm::vec3 y_normal[2] = {
-		glm::vec3(0, -100, 0),
-		glm::vec3(0, 100, 0)
-	};
-
-	glm::vec3 z_normal[2] = {
-		glm::vec3(0, 0, -100),
-		glm::vec3(0, 0, 100)
-	};
-
-	createVBO(xaxisVertexBuffer, sizeof(glm::vec3) * 2, x_axis);
-	createVBO(yaxisVertexBuffer, sizeof(glm::vec3) * 2, y_axis);
-	createVBO(zaxisVertexBuffer, sizeof(glm::vec3) * 2, z_axis);
-
-	createVBO(xcolorVertexBuffer, sizeof(glm::vec4) * 2, x_color);
-	createVBO(ycolorVertexBuffer, sizeof(glm::vec4) * 2, y_color);
-	createVBO(zcolorVertexBuffer, sizeof(glm::vec4) * 2, z_color);
-
-	createVBO(xnormalVertexBuffer, sizeof(glm::vec2) * 2, x_normal);
-	createVBO(ynormalVertexBuffer, sizeof(glm::vec2) * 2, y_normal);
-	createVBO(znormalVertexBuffer, sizeof(glm::vec2) * 2, z_normal);
-
-	createVAO(axisVertexArray);
-
-	SetVertexAttrib(xaxisVertexBuffer, pipelineProgram, "position", 3);
-	SetVertexAttrib(yaxisVertexBuffer, pipelineProgram, "position", 3);
-	SetVertexAttrib(zaxisVertexBuffer, pipelineProgram, "position", 3);
-
-	SetVertexAttrib(xcolorVertexBuffer, pipelineProgram, "color", 4);
-	SetVertexAttrib(ycolorVertexBuffer, pipelineProgram, "color", 4);
-	SetVertexAttrib(zcolorVertexBuffer, pipelineProgram, "color", 4);
-
-
-	SetVertexAttrib(xnormalVertexBuffer, pipelineProgram, "normal", 2);
-	SetVertexAttrib(ynormalVertexBuffer, pipelineProgram, "normal", 2);
-	SetVertexAttrib(znormalVertexBuffer, pipelineProgram, "normal", 2);
 	//sky
 	/*
 	generateSphere(glm::vec3(0, 0, 0), 100, 100, 100);

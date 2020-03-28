@@ -1,33 +1,31 @@
-﻿  basicPipelineProgram.cpp
-  hw1.cpp
+﻿  hw1.cpp
 C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(325,16): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(574,4): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(574,4): warning C4244:         with
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(574,4): warning C4244:         [
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(574,4): warning C4244:             T=float
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(574,4): warning C4244:         ]
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(590,4): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(590,4): warning C4244:         with
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(590,4): warning C4244:         [
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(590,4): warning C4244:             T=float
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(590,4): warning C4244:         ]
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(608,15): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(609,15): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(728,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(728,16): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(729,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(729,16): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(743,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(744,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(745,43): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(745,18): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(746,43): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(746,18): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(747,23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(747,18): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(770,20): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
-C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(771,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(571,4): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(571,4): warning C4244:         with
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(571,4): warning C4244:         [
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(571,4): warning C4244:             T=float
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(571,4): warning C4244:         ]
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(587,4): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(587,4): warning C4244:         with
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(587,4): warning C4244:         [
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(587,4): warning C4244:             T=float
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(587,4): warning C4244:         ]
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(605,15): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(606,15): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(725,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(725,16): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(726,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(726,16): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(740,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(741,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(742,43): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(742,18): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(743,43): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(743,18): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(744,23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(744,18): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(767,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\yz778\Desktop\CSCI 420\rollercoaster\assign1_coreOpenGL_starterCode\hw1-starterCode\hw1.cpp(768,21): warning C4018: '<': signed/unsigned mismatch
   jpeg.lib(jerror.obj) : MSIL .netmodule or module compiled with /GL found; restarting link with /LTCG; add /LTCG to the link command line to improve linker performance
 LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/LTCG' specification
 LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
