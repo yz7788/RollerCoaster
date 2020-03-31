@@ -1,2 +1,2 @@
 1
-splines/test.sp
+splines/my_3.sp

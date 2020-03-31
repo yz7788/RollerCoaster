@@ -1,34 +1,31 @@
 #version 150
 
-in vec3 surfaceNormal;
-in vec3 tolightVector;
-in vec4 col;
+in vec3 viewPosition;
+in vec3 viewNormal;
+in vec3 viewLightDirection;
 
 out vec4 c;
 
-uniform vec3 lightColor;
+uniform vec4 La; // light ambient
+uniform vec4 Ld; // light diffuse
+uniform vec4 Ls; // light specular
+uniform vec4 ka; // mesh ambient
+uniform vec4 kd; // mesh diffuse
+uniform vec4 ks; // mesh specular
+uniform float alpha; // shininess
 
 void main()
-{
-  // compute the final pixel color
-  
-  vec4 La;
-  vec4 Ld;
-  vec4 Ls;
+{ 
+  // camera is at (0,0,0) after the modelview transformation
+  vec3 eyedir = normalize(vec3(0, 0, 0) - viewPosition);
 
-  vec4 ka;
-  vec4 kd;
-  vec4 ks;
-  float alpha;
-  
-  vec3 k_a = vec3(0.3, 0.3, 0.3);
-  vec3 ambient = vec3(k_a.x * lightColor.x, k_a.y * lightColor.y, k_a.z * lightColor.z);
+  // reflected light direction
+  vec3 reflectDir = -reflect(viewLightDirection, viewNormal);
 
-  vec3 unitNormal = normalize(surfaceNormal);
-  vec3 unitLightVector = normalize(tolightVector);
-  
-  float brightness = max(dot(unitNormal, unitLightVector), 0.0);
-  vec3 diffuse = brightness * lightColor;
+  // Phong lighting
+  float d = max(dot(viewLightDirection, viewNormal), 0.0f);
+  float s = max(dot(reflectDir, eyedir), 0.0f);
 
-  c = vec4((diffuse + ambient) * col.xyz, 1.0);
+  // compute the final color
+  c = ka * La + d * kd * Ld + pow(s, alpha) * ks * Ls;
 }
