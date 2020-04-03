@@ -65,9 +65,6 @@ int windowWidth = 1280;
 int windowHeight = 720;
 char windowTitle[512] = "CSCI 420 homework II";
 
-int display_index = 0;
-bool falling = FALSE;
-
 int move_test = 0;
 
 //rail VAO, VBO
@@ -155,6 +152,9 @@ int railcrosssectionSize;
 
 float h_max = 0;
 float h_min = 100;
+
+//set the gravitational acceleration
+float g = 1.633;
 
 //the spline points
 glm::vec3* splinePoints;
@@ -348,12 +348,12 @@ void saveScreenshot(const char* filename)
 	delete[] screenshotData;
 }
 
-void setCamera(glm::vec3 point, glm::vec3 tangent, glm::vec3 normal, glm::vec3 focuspoint, int move) {
-	float a = 0.05;
-	float b = 1.0;
-	glm::vec3 eye = point + normal * a;
-	glm::vec3 center = eye + scaleMultiply(b, tangent);
-	matrix.LookAt(eye.x , eye.y, eye.z + move, center.x, center.y, center.z, normal.x, normal.y, normal.z);
+// specify the camera position at current index(u)
+void setCamera(int index, float h) {
+	glm::vec3 eye = splinePoints[index] + scaleMultiply(h, splineNormals[index]);
+	glm::vec3 center = eye + splineTangents[index];
+	glm::vec3 normal = splineNormals[index];
+	matrix.LookAt(eye.x, eye.y, eye.z, center.x, center.y, center.z, normal.x, normal.y, normal.z);
 }
 
 void displayFunc()
@@ -364,69 +364,50 @@ void displayFunc()
 	matrix.SetMatrixMode(OpenGLMatrix::ModelView);
 	matrix.LoadIdentity();
 
-	setCamera(splinePoints[(int)camera_index], splineTangents[(int)camera_index], splineNormals[(int)camera_index], splinePoints[(int)camera_index + 20], move_test);
-	//matrix.LookAt(0, 0, 5, 0, 0, 0, 0, 1, 0);
+	setCamera((int)camera_index, 0.05);
 
+	/*
 	//ModelView
 	matrix.Translate(landTranslate[0], landTranslate[1], landTranslate[2]);
 	matrix.Rotate(landRotate[0], 1.0f, 0.0f, 0.0f);
 	matrix.Rotate(landRotate[1], 0.0f, 1.0f, 0.0f);
 	matrix.Rotate(landRotate[2], 0.0f, 0.0f, 1.0f);
 	matrix.Scale(landScale[0], landScale[1], landScale[2]);
+	*/
 	
+	//get Modelview matrix
 	float m[16];
 	matrix.SetMatrixMode(OpenGLMatrix::ModelView);
 	matrix.GetMatrix(m);
 
+	//get normalmatrix
 	float n[16];
 	matrix.GetNormalMatrix(n);
 
+	//get Projection matrix
 	float p[16];
 	matrix.SetMatrixMode(OpenGLMatrix::Projection);
 	matrix.GetMatrix(p);
 
 	if (glGetError() != 0) cout << "matrix error" << endl;
 
-	//Use BasicProgram
+	//Use BasicProgram--------------------------------------------------------------------------------------------------------
 	pipelineProgram->Bind();
-	pipelineProgram->SetModelViewMatrix(m);
-	pipelineProgram->SetProjectionMatrix(p);
-	glUniformMatrix4fv(glGetUniformLocation(pipelineProgram->GetProgramHandle(), "normalMatrix"), 1, GL_FALSE, n);
 	
+	//set the phong shading parameters
 	float La[4] = { 0.5f, 0.5f, 0.5f };
 	float Ld[4] = { 0.5f, 0.5f, 0.5f };
 	float Ls[4] = { 0.5f, 0.5f, 0.5f };
-	
-	//emerald
-	/*
- 	float ka[4] = { 0.0215, 0.1745, 0.0215 };
-	float kd[4] = { 0.07568, 0.61424, 0.07568 };
-	float ks[4] = { 0.633, 0.727811, 0.633 };
-	float alpha = 0.6;
-	*/
-	
 	float ka[4] = { 0.135, 0.2225, 0.1575 };
 	float kd[4] = { 0.54, 0.89, 0.63 };
 	float ks[4] = { 0.316228, 0.316228, 0.316228 };
 	float alpha = 0.1;
-
-	/*
-	float ka[4] = { 0.1745,0.01175,0.01175 };
-	float kd[4] = { 0.61424,0.04136,0.04136 };
-	float ks[4] = { 0.727811,0.626959,0.626959 };
-	float alpha = 0.6;
-	*/
-	/*
-	float La[4] = { 0.24725, 0.1995, 0.0745, 1 };
-	float Ld[4] = { 0.75164, 0.60648, 0.22648, 1.0 };
-	float Ls[4] = { 0.628281, 0.555802, 0.366065, 1.0 };
-	float ka[4] = { 1, 1, 1, 1.0 };
-	float kd[4] = { 1, 1, 1, 1.0 };
-	float ks[4] = { 0.1, 0.1, 0.1, 1.0 };
-	float alpha = 0.4;
-	*/
 	float LightDirection[3] = { 0, 1, 1 };
 
+	// Specify the value of uniform variable for the pipelineProgram
+	pipelineProgram->SetModelViewMatrix(m);
+	pipelineProgram->SetProjectionMatrix(p);
+	glUniformMatrix4fv(glGetUniformLocation(pipelineProgram->GetProgramHandle(), "normalMatrix"), 1, GL_FALSE, n);
 	glUniform4fv(glGetUniformLocation(pipelineProgram->GetProgramHandle(), "La"), 1, La);
 	glUniform4fv(glGetUniformLocation(pipelineProgram->GetProgramHandle(), "Ld"), 1, Ld);
 	glUniform4fv(glGetUniformLocation(pipelineProgram->GetProgramHandle(), "Ls"), 1, Ls);
@@ -436,35 +417,40 @@ void displayFunc()
 	glUniform3fv(glGetUniformLocation(pipelineProgram->GetProgramHandle(), "LightDirection"), 1, LightDirection);
 	glUniform1f(glGetUniformLocation(pipelineProgram->GetProgramHandle(), "alpha"), alpha);
 
+	//render double T-shaped rail by combing four rectangle crosssection rail  
 	glBindVertexArray(railVertexArray);
 	glDrawArrays(GL_TRIANGLES, 0, railcrosssectionSize);
 
 	glBindVertexArray(railVertexArray_1);
 	glDrawArrays(GL_TRIANGLES, 0, railcrosssectionSize);
 
-	glBindVertexArray(railVertexArray_2);
-	glDrawArrays(GL_TRIANGLES, 0, railcrosssectionSize);
+	//glBindVertexArray(railVertexArray_2);
+	//glDrawArrays(GL_TRIANGLES, 0, railcrosssectionSize);
 
-	glBindVertexArray(railVertexArray_3);
-	glDrawArrays(GL_TRIANGLES, 0, railcrosssectionSize);
-
+	//glBindVertexArray(railVertexArray_3);
+	//glDrawArrays(GL_TRIANGLES, 0, railcrosssectionSize);
 
 	if (glGetError() != 0) cout << "basic pipeline program setting error" << endl;
 
-	//Use Texture Program
+	//Use Texture Program-------------------------------------------------------------------------------------------------------
 	textureProgram->Bind();
+
+	//specify the value of uniform variable for the textureProgram
 	textureProgram->SetModelViewMatrix(m);
 	textureProgram->SetProjectionMatrix(p);
 
+	//render ground
    	glBindTexture(GL_TEXTURE_2D, groundtexVertexBuffer);
 	glBindVertexArray(groundVertexArray);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
+	//render sky
 	glBindTexture(GL_TEXTURE_2D, skytexVertexBuffer);
 	glBindVertexArray(skyVertexArray);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skyelementBuffer);
 	glDrawElements(GL_TRIANGLE_STRIP, skyindices.size(), GL_UNSIGNED_SHORT, 0);
 
+	//render mountain
 	glBindTexture(GL_TEXTURE_2D, mountaintexVertexBuffer);
 	glBindVertexArray(mountainVertexArray);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mountainelementBuffer);
@@ -477,30 +463,25 @@ void displayFunc()
 
 void idleFunc()
 {
-	// do some stuff... 
-
 	// for example, here, you can save the screenshots to disk (to make the animation)
-	float h = splinePoints[(int)camera_index].y;
-	float delta_t =(float)(clock() - t1) / CLOCKS_PER_SEC;
 
-	t1 = clock();
-	
-	float g = 1.633;
+	//set velocity------------------------------------------------------------------------------------------------------
+	// record the current height
+	float h = splinePoints[(int)camera_index].y;
     
-	//if we didn't reach the first highest point, then we will set the train to go up with a uniform speed; 
-	//otherwise, it will free falling
-	if (falling == FALSE && velocity <= 0.02) velocity = 0.02;
-	else velocity = 0.02 + delta_t * sqrt(2 * 1.633 * (h_max - h)) / length(splineTangents[(int)camera_index]) * 100;
+	// calculate the time step
+	float delta_t = (float)(clock() - t1) / CLOCKS_PER_SEC;
+	t1 = clock();
+
+	// calculate the velocity acoording to the equation: 
+	// u_new - u_current = delta_t * sqrt(2 * g * (h_max - h))/||dp/du||
+	// set a initial velocity as 0.01, otherwise the train will stop at the highest point (when h = h_max, velocity == 0)
+	velocity = 0.01 + delta_t * sqrt(2 * g * (h_max - h)) / (length(splineTangents[(int)camera_index]) / spline_interval_num);
 	camera_index = camera_index + velocity;
 
-	h_max = MAX(h, h_max);
-	h_min = MIN(h, h_min);
+	//when moving to the end of the rollercoaster, start from the beginning again
+	if (camera_index >= (segment_num * spline_interval_num+1)) camera_index = camera_index - 1.0f - float(segment_num * spline_interval_num);
 
-	//when the train near the highest point, then start to free falling
-	if (h > splinePoints[(int)camera_index + 1].y) falling = TRUE;
-	else falling = FALSE;
-
-	cout << velocity << " " << h_max << " " << h << falling << endl;
 	//-5 10  .2 
 	//0  10  .3
 	//.1  10  .4 
@@ -651,7 +632,7 @@ void keyboardFunc(unsigned char key, int x, int y)
 	case 'w':
 		camera_index = camera_index + 5;
 		//cout << camera_index << endl;
-		cout << splinePoints[(int)camera_index].x << " " << splinePoints[(int)camera_index].y << " " << splinePoints[(int)camera_index].z << endl;
+		//cout << splinePoints[(int)camera_index].x << " " << splinePoints[(int)camera_index].y << " " << splinePoints[(int)camera_index].z << " " << camera_index << endl;
 	    break;
 
 	case 's':
@@ -676,6 +657,7 @@ glm::vec3 catmullRoll_point(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 
 			+ u * u * (1 * p1[i] - 2.5 * p2[i] + 2 * p3[i] - 0.5 * p4[i])
 			+ u * (-0.5 * p1[i] + 0.5 * p3[i])
 			+ (1 * p2[i]));
+
 		//another representation of catmullroll spline
 		/*point[i] = p1[i] * (-0.5 * u * u * u + u * u - 0.5 * u) +
 			p2[i] * (1.5 * u * u * u - 2.5 * u * u + 1.0) +
@@ -699,7 +681,7 @@ glm::vec3 catmullRoll_tangent(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec
 //genrate a spline, including points, tangents, normals, and binormals from splines[spline_index] to splinePoints, and also rail cross section points
 void generateSpline(int spline_index) {
 
-	segment_num = splines[spline_index].numControlPoints;
+	segment_num = splines[spline_index].numControlPoints - 3;
 	int segment_num_3 = splines[spline_index].numControlPoints - 3;
 
 	splinePoints = new glm::vec3[spline_interval_num * segment_num];
@@ -707,7 +689,7 @@ void generateSpline(int spline_index) {
 	splineNormals = new glm::vec3[spline_interval_num * segment_num];
 	splineBinormals = new glm::vec3[spline_interval_num * segment_num];
 
-	splinePoints_crosssection = new glm::vec3[4 * spline_interval_num * segment_num + 24];
+	splinePoints_crosssection = new glm::vec3[4 * spline_interval_num * segment_num];
 
 	//record the index for spline arrays (splinePoints[], splineTangents[], splineNormals[], splineBiNormals[])
 	int index = 0;
@@ -736,6 +718,10 @@ void generateSpline(int spline_index) {
 			float u = float(j) / spline_interval_num;
 			splinePoints[index] = catmullRoll_point(controlpoint[0], controlpoint[1], controlpoint[2], controlpoint[3], u);
 			splineTangents[index] = catmullRoll_tangent(controlpoint[0], controlpoint[1], controlpoint[2], controlpoint[3], u);
+			//cout << index << " " << splinePoints[index].x << " " << splinePoints[index].y << " " << splinePoints[index].z << endl;
+
+			h_max = MAX(h_max, splinePoints[index].y);
+			h_min = MIN(h_min, splinePoints[index].y);
 
 			//calculate splineNormals and spline Binormals
 			if (index == 0) {
@@ -792,12 +778,13 @@ void generateSingleRail(float w, float h, float a, float b, GLuint& VertexBuffer
 		splinePoints_crosssection[i * 4 + 2] = splinePoints[i] + scaleMultiply(h, splineNormals[i]) + scaleMultiply(-w, splineBinormals[i]) + scaleMultiply(a, splineBinormals[i]) + scaleMultiply(b, splineNormals[i]);
 		splinePoints_crosssection[i * 4 + 3] = splinePoints[i] + scaleMultiply(-h, splineNormals[i]) + scaleMultiply(-w, splineBinormals[i]) + scaleMultiply(a, splineBinormals[i]) + scaleMultiply(b, splineNormals[i]);
 	}
-	railcrosssectionSize = (spline_interval_num * segment_num) * 24;
 
 	//reorganize the crosssection points to prepare for draw by OpenGL using GL_TRIANGLES
+	railcrosssectionSize = (spline_interval_num * segment_num - 1) * 24;
 	splinePoints_ordered_crosssection = new glm::vec3[railcrosssectionSize];
-	for (int i = 0; i < spline_interval_num * segment_num; i++) {
-		if (i != spline_interval_num * segment_num - 1) {
+
+	for (int i = 0; i < spline_interval_num * segment_num - 1; i++) {
+		//if (i != spline_interval_num * segment_num - 1) {
 			splinePoints_ordered_crosssection[i * 24] = splinePoints_crosssection[i * 4 + 2];
 			splinePoints_ordered_crosssection[i * 24 + 1] = splinePoints_crosssection[(i + 1) * 4 + 2];
 			splinePoints_ordered_crosssection[i * 24 + 2] = splinePoints_crosssection[i * 4 + 3];
@@ -829,8 +816,8 @@ void generateSingleRail(float w, float h, float a, float b, GLuint& VertexBuffer
 			splinePoints_ordered_crosssection[i * 24 + 21] = splinePoints_crosssection[(i + 1) * 4];
 			splinePoints_ordered_crosssection[i * 24 + 22] = splinePoints_crosssection[i * 4 + 2];
 			splinePoints_ordered_crosssection[i * 24 + 23] = splinePoints_crosssection[(i + 1) * 4 + 2];
-		}
-
+		//}
+        /*
 		else {
 			splinePoints_ordered_crosssection[i * 24] = splinePoints_crosssection[i * 4 + 2];
 			splinePoints_ordered_crosssection[i * 24 + 1] = splinePoints_crosssection[2];
@@ -864,11 +851,12 @@ void generateSingleRail(float w, float h, float a, float b, GLuint& VertexBuffer
 			splinePoints_ordered_crosssection[i * 24 + 22] = splinePoints_crosssection[i * 4 + 2];
 			splinePoints_ordered_crosssection[i * 24 + 23] = splinePoints_crosssection[2];
 		}
+		*/
 	}
 
 	//calculate normal for each rail cross section point
 	lightNormals = new glm::vec3[railcrosssectionSize];
-	for (int i = 0; i < spline_interval_num * segment_num; i++) {
+	for (int i = 0; i < spline_interval_num * segment_num - 1; i++) {
 		for (int j = 0; j < 6; j++) {
 			lightNormals[i * 24 + j] = scaleMultiply(-1, splineBinormals[i]);
 			lightNormals[i * 24 + j + 6] = scaleMultiply(-1, splineNormals[i]);
@@ -886,8 +874,8 @@ void generateSingleRail(float w, float h, float a, float b, GLuint& VertexBuffer
 //generate a half of a sphere to act as the sky
 void generateSphere(glm::vec3 center, float radius, unsigned int rings, unsigned int sectors)
 {
-	float const R = 1. / (float)(rings - 1);
-	float const S = 1. / (float)(sectors - 1);
+	float R = 1. / (float)(rings - 1);
+	float S = 1. / (float)(sectors - 1);
 
 	sectors = sectors / 2;
 
@@ -903,9 +891,9 @@ void generateSphere(glm::vec3 center, float radius, unsigned int rings, unsigned
 
 	for (int r = 0; r < rings; r++) {
 		for (int s = 0; s < sectors; s++) {
-			float const x = sin(3.1415926 * r * R) * cos(2 * 3.1415926 * s * S);
-			float const y = sin(3.1415926 * r * R) * sin(2 * 3.1415926 * s * S);
-			float const z = cos(3.1415926 * r * R); 
+			float x = sin(3.1415926 * r * R) * cos(2 * 3.1415926 * s * S);
+			float y = sin(3.1415926 * r * R) * sin(2 * 3.1415926 * s * S);
+			float z = cos(3.1415926 * r * R); 
 
 			*t++ = s * S * 2;
 			*t++ = r * R;
@@ -925,9 +913,9 @@ void generateSphere(glm::vec3 center, float radius, unsigned int rings, unsigned
 		}
 	}
 
+	//set the indices of sky vertices
 	skyindices.resize(rings * sectors * 2);
 	std::vector<GLushort>::iterator i = skyindices.begin();
-
 	for (int r = 0; r < rings; r++) {
 		for (int s = 0; s < sectors; s++) {
 			*i++ = r * sectors + s;
@@ -935,7 +923,6 @@ void generateSphere(glm::vec3 center, float radius, unsigned int rings, unsigned
 		}
 	}
 }
-
 
 void initScene(int argc, char* argv[])
 {
@@ -948,7 +935,7 @@ void initScene(int argc, char* argv[])
 	if (ret != 0) abort();
 
 	//generate data for splines[0] (including splinePoints[], splineTangents[], splineNormals[], splineBinormals[])
-	generateSpline(0);
+	generateSpline(rand() % numSplines);
 
 	//To render a T-shaped double rail, I render 4 rails of rectangle crosssection.
 	generateSingleRail(0.01, 0.01, 0.05, 0, railVertexBuffer, railnormalVertexBuffer);
@@ -987,10 +974,10 @@ void initScene(int argc, char* argv[])
 	};
 
 	glm::vec2 groundtexCoords[4] = {
-		glm::vec2(0, 100),
+		glm::vec2(0, 1),
 		glm::vec2(0, 0),
-		glm::vec2(100, 100),
-		glm::vec2(100, 0)
+		glm::vec2(1, 1),
+		glm::vec2(1, 0)
 	};
 
 	createVBO(groundVertexBuffer, sizeof(glm::vec3) * 4, ground);
@@ -1035,8 +1022,8 @@ void initScene(int argc, char* argv[])
 	int map_width = heightmapImage->getWidth();
 
   	int sizeHeightmap = map_height * map_width;
-
 	sizeMountain = (map_width - 1) * (map_height - 1) * 6;
+
 	glm::vec3* points = new glm::vec3[map_height * map_width];
 	glm::vec2* mountaintexCoords = new glm::vec2[map_height * map_width];
 
@@ -1079,18 +1066,21 @@ void cleanUp() {
 
 int main(int argc, char* argv[])
 {
-	//if (argc < 2)
-	//{
-	//	printf("usage: %s <trackfile>\n", argv[0]);
-	//	exit(0);
-	//}
+	if (argc < 2)
+	{
+		printf("usage: %s <trackfile>\n", argv[0]);
+		exit(0);
+	}
 
 	// load the splines from the provided filename
-	loadSplines("track.txt");
+	loadSplines(argv[1]);
 
 	printf("Loaded %d spline(s).\n", numSplines);
 	for (int i = 0; i < numSplines; i++)
 		printf("Num control points in spline %d: %d.\n", i, splines[i].numControlPoints);
+
+	// Initialize random number generator
+	srand((int)time(0));
 
 	cout << "Initializing GLUT..." << endl;
 	glutInit(&argc, argv);

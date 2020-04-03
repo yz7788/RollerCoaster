@@ -372,7 +372,7 @@ ImageIO::errorType ImageIO::saveTGA(const char * filename)
   #undef WRITECHAR
 }
 
-ImageIO::errorType ImageIO::loadJPEG(const char * filename)
+ImageIO::errorType ImageIO::loadJPEG(const char * filename) //load image to the pointer pixels
 {
 #ifdef ENABLE_JPEG
   FILE * file = fopen(filename, "rb");
