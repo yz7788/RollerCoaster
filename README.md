@@ -15,14 +15,14 @@ $ ./hw2 track.txt
 3. Randomly generate track from several sequences of splines in track.txt
 
 ## Keyboard/Mouse controls
-1. Accelarate/ Decelarate
+1. Accelarate/ Decelarate:
    Key "W" / "S"
 
-2. Pause / Continue
+2. Pause / Continue:
     Key " " (spacebar)
 
-3. Rotate camera view
+3. Rotate camera view:
    Left Mouse Button Drag
    
-4. Change scene
+4. Change scene:
     Key "1" / "2"
