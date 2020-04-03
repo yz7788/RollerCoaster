@@ -26,3 +26,11 @@ $ ./hw2 track.txt
    
 4. Change scene:
     Key "1" / "2"
+
+<p align="center">
+ <img src="rollercoaster/hw1-starterCode/animation/722.jpg" height="700"/>
+</p >
+
+<p align="center">
+ <img src="rollercoaster/hw1-starterCode/animation/277.jpg" height="700"/>
+</p >
