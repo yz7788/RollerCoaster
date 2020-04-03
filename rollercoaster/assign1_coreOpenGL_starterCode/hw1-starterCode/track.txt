@@ -1,2 +1,0 @@
-1
-splines/my_3.sp
