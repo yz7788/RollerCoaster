@@ -28,9 +28,9 @@ $ ./hw2 track.txt
     Key "1" / "2"
 
 <p align="center">
- <img src="rollercoaster/hw1-starterCode/animation/722.jpg" height="700"/>
+ <img src="rollercoaster/hw1-starterCode/animation/722.jpg" height="600"/>
 </p >
 
 <p align="center">
- <img src="rollercoaster/hw1-starterCode/animation/277.jpg" height="700"/>
+ <img src="rollercoaster/hw1-starterCode/animation/277.jpg" height="600"/>
 </p >
